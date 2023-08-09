@@ -1,0 +1,77 @@
+Reconciliation logic tested against a stub tenant
+Date: 2026-08-12
+No CyberArk tenant. There is no free self-hosted EPV.
+======================================================================
+
+WHAT WAS UNTESTED
+
+  Test-Reconciliation.ps1 is the largest piece of logic in this lab. It
+  decides what counts as drift, in four categories, and decides what -Apply
+  writes back to a privileged-access tenant.
+
+  None of it was tested. RoleMap.Tests.ps1 covered the permission mapping,
+  which is pure and easy to test. The reconciliation itself only ran against
+  a live tenant, and since there is no free self-hosted EPV, in practice it
+  had never run at all.
+
+  For a script whose -Apply path modifies safe membership, that is the wrong
+  thing to leave unexercised.
+
+THE APPROACH
+
+  tests/stubs/psPAS is a module named psPAS. Prepending tests/stubs to
+  PSModulePath makes the script's own `Import-Module psPAS` resolve to it.
+
+  The script under test is NOT modified. That was the constraint: a test that
+  requires editing the thing it tests is testing something else. The stub
+  serves a tenant described by a JSON fixture and appends every write to a
+  log, so a test can assert both what the script changed and what it did not.
+
+  The stub deliberately exports no Remove-* cmdlet. If the script ever grows
+  a deletion path it will fail with "term not recognized" rather than
+  silently revoking access inside a test run.
+
+  Permission fixtures are built by calling RoleMap rather than hand-written.
+  A hand-copied permission set drifts from the definition, and then the tests
+  pass while describing a role that no longer exists.
+
+WHAT IS NOW COVERED, 9 TESTS
+
+  tenant matches the file            -> 0 drift, exit 0
+  undeclared member                  -> UNEXPECTED, exit 1
+  member above their role            -> EXTRA_PERM, exit 1
+  missing safe                       -> MISSING, and no cascade of member
+                                        findings for a safe that is absent
+  account on the wrong platform      -> WRONG_PLATFORM
+  unknown role in the state file     -> throws, and writes NOTHING despite
+                                        -Apply being passed
+  -Apply on an empty tenant          -> creates the safe
+  -Apply with an undeclared member   -> no deletion attempted
+  no -Apply                          -> no writes at all
+
+  Total suite: 29 tests, up from 20.
+
+THE SUITE WAS ITSELF TESTED
+
+  Sabotaged the UNEXPECTED branch in the script, replacing the membership
+  check with `if ($false)`, and confirmed the suite fails:
+
+    [-] flags a member nobody declared as UNEXPECTED
+        Expected 1, but got 0.
+
+  Restored, 29 pass, and `git diff` on the script is empty.
+
+  A test suite that has never been observed failing is a suite nobody has
+  checked. Six tools in these labs have now reported success while reading
+  nothing; adding a seventh green checkmark on trust would have been the
+  least defensible thing in the repo.
+
+WHAT THIS DOES NOT PROVE
+
+  Anything about CyberArk. Real psPAS cmdlets return richer objects, page
+  their results, and behave differently across PVWA versions. These are
+  contract tests against the shapes this script consumes.
+
+  The claim is: the reconciliation logic is correct, and the -Apply path
+  writes what it should and nothing else. NOT: this has been run against an
+  EPV. That still needs a tenant, and no free one exists.

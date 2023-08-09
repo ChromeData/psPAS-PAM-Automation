@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="653" height="426" viewBox="0 0 653 426" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13">
+<rect width="653" height="426" rx="8" fill="#0d1117" stroke="#30363d"/>
+<rect width="653" height="34" rx="8" fill="#161b22"/>
+<rect y="26" width="653" height="8" fill="#161b22"/>
+<circle cx="18" cy="17" r="5" fill="#ff5f56"/>
+<circle cx="36" cy="17" r="5" fill="#ffbd2e"/>
+<circle cx="54" cy="17" r="5" fill="#27c93f"/>
+<text x="72" y="22" fill="#8b949e">reconciliation tested against a stub psPAS tenant</text>
+<text x="16" y="54" fill="#7ee787">$</text><text x="33" y="54" fill="#c9d1d9">Invoke-Pester ./tests</text>
+<text x="16" y="94" fill="#c9d1d9" xml:space="preserve">Describing Reconciliation drift classification</text>
+<text x="16" y="114" fill="#c9d1d9" xml:space="preserve">  [+] reports no drift when the tenant matches the state file</text>
+<text x="16" y="134" fill="#c9d1d9" xml:space="preserve">  [+] flags a member nobody declared as UNEXPECTED</text>
+<text x="16" y="154" fill="#c9d1d9" xml:space="preserve">  [+] flags a declared member holding more than their role as EXTRA_PERM</text>
+<text x="16" y="174" fill="#c9d1d9" xml:space="preserve">  [+] flags a missing safe and does not then evaluate its members</text>
+<text x="16" y="194" fill="#c9d1d9" xml:space="preserve">  [+] flags an account on the wrong platform</text>
+<text x="16" y="214" fill="#c9d1d9" xml:space="preserve">Describing State file validation happens before the tenant is touched</text>
+<text x="16" y="234" fill="#c9d1d9" xml:space="preserve">  [+] refuses an unknown role rather than granting an empty permission set</text>
+<text x="16" y="254" fill="#c9d1d9" xml:space="preserve">Describing Apply writes what it should, and nothing else</text>
+<text x="16" y="274" fill="#c9d1d9" xml:space="preserve">  [+] creates a missing safe and adds its declared members</text>
+<text x="16" y="294" fill="#c9d1d9" xml:space="preserve">  [+] never deletes anything, even when the tenant has undeclared members</text>
+<text x="16" y="314" fill="#c9d1d9" xml:space="preserve">  [+] writes nothing at all without -Apply</text>
+<text x="16" y="354" fill="#c9d1d9" xml:space="preserve">  ... plus 20 RoleMap tests (role model + permission boundaries)</text>
+<text x="16" y="394" fill="#f85149" font-weight="600" xml:space="preserve">Tests Passed: 29, Failed: 0, Skipped: 0, Inconclusive: 0, NotRun: 0</text>
+</svg>

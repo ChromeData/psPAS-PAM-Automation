@@ -1,0 +1,32 @@
+# Declarative intended state for the lab tenant. The runbooks converge the tenant
+# toward this file, it is the source of truth, not the PVWA UI.
+
+safes:
+  - name: LAB-Linux-Root
+    description: Root credentials for lab Linux hosts
+    managingCPM: PasswordManager
+    members:
+      - name: lab-pam-admins
+        role: full            # runbook maps 'full' to the CyberArk permission set
+      - name: lab-auditors
+        role: audit           # read + list only
+
+  - name: LAB-AWS-Break-Glass
+    description: Emergency AWS root/break-glass accounts
+    managingCPM: PasswordManager
+    members:
+      - name: lab-pam-admins
+        role: full
+      - name: lab-incident-responders
+        role: use             # retrieve + connect, no manage
+
+accounts:
+  - safe: LAB-Linux-Root
+    platformId: UnixSSH
+    address: lab-host-01.internal
+    userName: root
+
+  - safe: LAB-AWS-Break-Glass
+    platformId: AWSAccessKeys
+    address: "123456789012"
+    userName: break-glass
