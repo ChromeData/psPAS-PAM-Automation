@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Report — and optionally correct — drift between intended-state.yml and the
+  Report, and optionally correct, drift between intended-state.yml and the
   live CyberArk/Idira tenant.
 
 .DESCRIPTION

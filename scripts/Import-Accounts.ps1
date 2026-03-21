@@ -3,7 +3,7 @@
   Onboard the accounts listed in intended-state.yml into their safes.
 .DESCRIPTION
   Idempotent-ish: checks for an existing account at the same address+username in
-  the safe before adding. Passwords are NOT in the state file — the CPM reconciles
+  the safe before adding. Passwords are NOT in the state file, the CPM reconciles
   or you set them interactively; never commit credential values.
 #>
 [CmdletBinding()]

@@ -1,6 +1,6 @@
 # Privileged-Account Onboarding Runbook (psPAS)
 
-> The deliverable of Lab 11 — write this up as if handing it to a teammate. Fill the
+> The deliverable of Lab 11, write this up as if handing it to a teammate. Fill the
 > bracketed sections from your own run against the lab/trial tenant.
 
 ## Purpose
@@ -17,17 +17,17 @@ single source of truth.
 
 ## Workflow
 
-1. **Connect** — `./Connect-Lab.ps1 -BaseUri <tenant>` (credentials prompted, never stored)
-2. **Provision safes** — `./New-LabSafe.ps1` (idempotent; skips existing)
-3. **Onboard accounts** — `./Import-Accounts.ps1`
-4. **Reconcile** — `./Test-Reconciliation.ps1` (read-only drift report)
-5. **Disconnect** — `./Disconnect-Lab.ps1`
+1. **Connect**, `./Connect-Lab.ps1 -BaseUri <tenant>` (credentials prompted, never stored)
+2. **Provision safes**, `./New-LabSafe.ps1` (idempotent; skips existing)
+3. **Onboard accounts**, `./Import-Accounts.ps1`
+4. **Reconcile**, `./Test-Reconciliation.ps1` (read-only drift report)
+5. **Disconnect**, `./Disconnect-Lab.ps1`
 
 ## Idempotency guarantees
 
 - Safes: created only if absent; members added only if missing.
 - Accounts: matched on address + username before creation.
-- Reconciliation never auto-deletes — `UNEXPECTED` members are reported for a human.
+- Reconciliation never auto-deletes, `UNEXPECTED` members are reported for a human.
 
 ## Ordering
 
