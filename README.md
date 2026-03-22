@@ -60,7 +60,7 @@ Needs PowerShell 7+, psPAS, powershell-yaml, and a CyberArk/Idira tenant (the tr
 
 ## Findings
 
-`findings/` fills in on the first live run. [LAB-NOTES.md](./LAB-NOTES.md) is the log.
+[`findings/`](./findings/) holds the reconciliation contract-test run against a stub psPAS tenant, verified by sabotage. [LAB-NOTES.md](./LAB-NOTES.md) is the log.
 
 ## License
 
