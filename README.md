@@ -9,7 +9,7 @@
 | **Domains** | CyberArk/Idira, PowerShell |
 | **Built on** | [pspete/psPAS](https://github.com/pspete/psPAS), [cyberark/epv-api-scripts](https://github.com/cyberark/epv-api-scripts) |
 | **Cost** | $0 against a trial or lab tenant. **Runtime** ~3 hours |
-| **Status** | Built and verified. Role model tested (20 passing, output in findings/). Live tenant run pending |
+| **Status** | Reconciliation logic tested against a stub psPAS tenant, 29 tests, suite verified by sabotage (findings/). Live EPV run still needs a tenant |
 
 ## Situation
 
