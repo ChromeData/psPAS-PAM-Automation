@@ -38,9 +38,11 @@ The reconciler reports four kinds of drift in order of how much they should worr
 
 ## Result
 
-20 offline tests cover the role model, and they run on a laptop with no CyberArk, no network, no credentials. CI runs them plus a linter. That is why the role map is its own module: the part that decides who gets what is the part you most need certainty about.
+**The reconciliation engine — the part that decides who gets what — is proven end to end without a CyberArk tenant.** There is no free self-hosted EPV, so I built a stub tenant that shadows the psPAS module via `PSModulePath`, letting the reconciler run completely unmodified against scripted drift: an undeclared member, privilege creep, a missing safe, an account on the wrong platform. Each case asserts both what `-Apply` changed and what it left alone.
 
-`-Apply` creates what is missing and resets permissions down to the declared role. It never deletes a member or a safe. A reconciler with delete rights will, the first time the file is wrong, revoke access during an incident. Knowing what not to automate reads as experience.
+29 tests, up from the 20 that cover the role model, which stays its own module because who-gets-what is the part you most need certainty about. And the suite itself was verified by sabotage: I broke the "undeclared member" detection, watched the tests go red, and restored it — because a test that has never been seen to fail is a test nobody has checked. Full output in [findings/reconciliation-contract-tests.txt](./findings/reconciliation-contract-tests.txt).
+
+The design decision that reads as experience: `-Apply` creates what is missing and resets permissions down to the declared role, but **never deletes** a member or a safe. A reconciler with delete rights will, the first time the state file is wrong, revoke access during an incident. The stub enforces it — it exports no `Remove-*` cmdlet, so a deletion path added later fails loudly instead of silently revoking access in a test.
 
 ## What I did not build
 
