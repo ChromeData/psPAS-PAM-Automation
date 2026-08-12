@@ -1,0 +1,43 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pester:
+    name: Pester (role model)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -MinimumVersion 5.5.0 -Force -SkipPublisherCheck -Scope CurrentUser
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $result = Invoke-Pester ./tests -Output Detailed -PassThru
+          if ($result.FailedCount -gt 0) { exit 1 }
+
+  lint:
+    name: PSScriptAnalyzer
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Analyse
+        shell: pwsh
+        run: |
+          $issues = Invoke-ScriptAnalyzer -Path ./scripts -Recurse -Severity Error,Warning
+          $issues | Format-Table -AutoSize
+          if ($issues | Where-Object Severity -eq 'Error') { exit 1 }
