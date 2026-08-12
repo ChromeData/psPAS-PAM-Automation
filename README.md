@@ -1,5 +1,8 @@
 # Lab 11: CyberArk/Idira PAM Automation with psPAS
 
+<p align="center"><img src="assets/pester-run.svg" alt="Reconciliation logic tested against a stub psPAS tenant" width="720"></p>
+
+
 [![tests](https://github.com/ChromeData/psPAS-PAM-Automation/actions/workflows/tests.yml/badge.svg)](https://github.com/ChromeData/psPAS-PAM-Automation/actions/workflows/tests.yml)
 
 **Most CyberArk work is done by clicking through the web console. This does it from a file: safes, membership, and accounts declared once, then a script that finds every difference between that file and the live vault.**
