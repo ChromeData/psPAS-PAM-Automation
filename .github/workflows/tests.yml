@@ -8,7 +8,7 @@ on:
 
 jobs:
   pester:
-    name: Pester (role model)
+    name: Pester (role model + reconciliation)
     runs-on: ubuntu-latest
 
     steps:
@@ -17,6 +17,18 @@ jobs:
       - name: Install Pester
         shell: pwsh
         run: Install-Module Pester -MinimumVersion 5.5.0 -Force -SkipPublisherCheck -Scope CurrentUser
+
+      - name: Install powershell-yaml
+        shell: pwsh
+        # Test-Reconciliation.ps1 installs this itself when missing, but doing
+        # it here keeps the install out of the timing of the test run and makes
+        # a network failure look like a network failure rather than a test one.
+        run: Install-Module powershell-yaml -Force -SkipPublisherCheck -Scope CurrentUser
+
+      # psPAS itself is deliberately NOT installed. tests/stubs/psPAS shadows it
+      # via PSModulePath so the reconciliation script runs unmodified against a
+      # scripted tenant. Installing the real module would let a test
+      # accidentally resolve to it and then fail for want of a CyberArk tenant.
 
       - name: Run tests
         shell: pwsh

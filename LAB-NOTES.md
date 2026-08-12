@@ -117,3 +117,56 @@ real tenant nests it one level deeper than expected, the normaliser silently see
 permissions and every member reports as `MISSING_PERM`. That failure looks like drift
 rather than a bug, which makes it nasty. Check one member by hand before trusting the
 first report.
+
+### 2026-08-12, the reconciler had never actually run
+
+`Test-Reconciliation.ps1` is the largest piece of logic here. It classifies drift
+into four categories and, with `-Apply`, writes back to a privileged-access
+tenant. None of it was tested. `RoleMap.Tests.ps1` covered the permission
+mapping, which is pure and easy; the reconciliation only ran against a live
+tenant, and since there is no free self-hosted EPV, it had never run at all.
+
+For a script whose apply path modifies safe membership, that is the wrong thing
+to leave unexercised.
+
+**The approach.** `tests/stubs/psPAS` is a module named `psPAS`. Prepending
+`tests/stubs` to `PSModulePath` makes the script's own `Import-Module psPAS`
+resolve to it. The script under test is not modified at all, which was the whole
+constraint: a test that requires editing the thing it tests is testing something
+else.
+
+Two deliberate choices in the stub:
+
+- It exports **no `Remove-*` cmdlet**. If the script ever grows a deletion path
+  it fails with "term not recognized" rather than quietly revoking access inside
+  a test run. The script's own docs say removals are never automated; now that is
+  enforced rather than promised.
+- Permission fixtures are built by **calling RoleMap**, not hand-written. A
+  hand-copied permission set drifts from the definition and then the tests pass
+  while describing a role that no longer exists.
+
+9 new tests. The two I care about most: an unknown role in the state file must
+throw *and write nothing* even when `-Apply` is passed, and a missing safe must
+not produce a cascade of member findings for a safe that is not there.
+
+**Then I tested the tests.** Sabotaged the UNEXPECTED branch, replacing the
+membership check with `if ($false)`, and confirmed the suite fails:
+
+```
+[-] flags a member nobody declared as UNEXPECTED
+    Expected 1, but got 0.
+```
+
+Restored; 29 pass, `git diff` on the script empty. A suite never observed failing
+is a suite nobody has checked. Six tools in these labs have now reported success
+while reading nothing, and adding a seventh green checkmark on trust would have
+been the least defensible thing here.
+
+**What this is not:** evidence it works against CyberArk. Real psPAS cmdlets
+return richer objects, page results, and vary across PVWA versions. These are
+contract tests against the shapes the script consumes. The logic is verified; the
+integration is not, and that still needs a tenant.
+
+Detail in `findings/reconciliation-contract-tests.txt`.
+
+---
