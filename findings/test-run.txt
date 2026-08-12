@@ -1,0 +1,26 @@
+Test run: 2026-08-12 00:38:34
+Host: Windows 11, PowerShell 7.6.4, Pester 6.1.0
+Command: Invoke-Pester ./tests
+============================================================
+Result: 20 passed, 0 failed, 0 skipped in 0.79s
+
+[PASS] Get-LabRoleNames.returns exactly the three roles used by intended-state.yml
+[PASS] Get-LabRolePermission.throws on an unknown role rather than returning an empty set
+[PASS] Get-LabRolePermission.returns a hashtable that can be splatted into Add-PASSafeMember
+[PASS] Get-LabRolePermission.returns a copy, so a caller cannot mutate the shared definition
+[PASS] Role boundaries.escalates strictly: audit is a subset of use, use is a subset of full
+[PASS] Role boundaries.audit.can list accounts
+[PASS] Role boundaries.audit.CANNOT retrieve a credential
+[PASS] Role boundaries.audit.CANNOT use an account
+[PASS] Role boundaries.audit.CANNOT manage membership
+[PASS] Role boundaries.use.can retrieve and connect
+[PASS] Role boundaries.use.CANNOT manage the safe or its membership
+[PASS] Role boundaries.use.CANNOT delete accounts
+[PASS] Role boundaries.full.can manage the safe and its membership
+[PASS] Role boundaries.full.CANNOT self-approve dual-control requests
+[PASS] Compare-LabRolePermission.reports no drift when permissions match the role exactly
+[PASS] Compare-LabRolePermission.flags privilege creep as Extra
+[PASS] Compare-LabRolePermission.flags a missing permission as Missing
+[PASS] Compare-LabRolePermission.treats a permission explicitly set to false as absent
+[PASS] Compare-LabRolePermission.handles a member with no permission object at all
+[PASS] Compare-LabRolePermission.ignores non-boolean properties psPAS attaches to the object

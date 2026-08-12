@@ -78,4 +78,42 @@ be self-defeating.
 
 ## Log
 
-_(first entry goes here on the first live run)_
+### 2026-08-11 — first version put raw permissions in the state file
+
+The original `intended-state.yml` listed CyberArk permission booleans directly. It
+worked and it was unusable: 22 flags per member, a diff nobody could review, and
+nothing stopping two entries that both mean "auditor" from differing.
+
+Collapsed to three roles with the translation in one module. The state file became
+reviewable and the permission model became testable, which is the real win — the part
+of a PAM automation you most need certainty about is the part that decides who gets
+what, and now it runs on a laptop with no tenant.
+
+The `audit` boundary is the one I was most careful with. `ListAccounts` feels harmless
+and `RetrieveAccounts` is the actual line between oversight and access, and they get
+granted together constantly in real safes. Here it's a test, not a convention.
+
+Final run: **20 passed** (`findings/test-run.txt`).
+
+---
+
+### 2026-08-11 — talked myself out of automating deletion
+
+Considered full convergence, including removing undeclared members. Decided against
+it, and this is the decision I'd most want to defend out loud.
+
+A reconciler with delete rights will, the first time the state file is stale, revoke
+access during an incident. The blast radius of "wrong revocation at 3am" is worse than
+the drift it fixes. So `-Apply` creates what's missing and resets permissions down to
+the declared role, and removals are reported for a human.
+
+Used `Set-PASSafeMember` rather than adding missing permissions, though: replacing the
+whole set converges in *both* directions, so privilege creep actually gets removed.
+Adding-only would report creep forever and never fix it.
+
+**Biggest risk on the first live run:** the shape of `Get-PASSafeMember`'s permission
+object. The comparer normalises whatever psPAS returns down to name -> bool. If the
+real tenant nests it one level deeper than expected, the normaliser silently sees zero
+permissions and every member reports as `MISSING_PERM`. That failure looks like drift
+rather than a bug, which makes it nasty. Check one member by hand before trusting the
+first report.
