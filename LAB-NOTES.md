@@ -1,4 +1,4 @@
-# Lab Notes — 11 psPAS PAM Automation
+# Lab Notes, 11 psPAS PAM Automation
 
 Running log. Errors, dead ends, fixes, surprises. Dated, newest at the bottom.
 This file is the proof the lab was real.
@@ -8,7 +8,7 @@ This file is the proof the lab was real.
 ## Format
 
 ```
-### YYYY-MM-DD — what I was trying to do
+### YYYY-MM-DD, what I was trying to do
 
 **Expected:**
 **Got:**
@@ -23,7 +23,7 @@ This file is the proof the lab was real.
 ### Roles instead of raw permissions
 
 First pass put CyberArk permission booleans straight in `intended-state.yml`.
-It worked and it was unusable — 22 flags per member, no way to review a diff,
+It worked and it was unusable, 22 flags per member, no way to review a diff,
 and nothing stopping two "auditor" entries from differing. Collapsed to three
 roles with the translation in one module. The state file became reviewable and
 the permission model became testable.
@@ -71,21 +71,21 @@ be self-defeating.
 - [ ] Does `-WhatIf` correctly suppress every write path? (Test before trusting it.)
 - [ ] What does `Compare-LabRolePermission` report for a member added via the
       PVWA with a custom permission set?
-- [ ] Capture a real `UNEXPECTED` finding — deliberately add a member outside
+- [ ] Capture a real `UNEXPECTED` finding, deliberately add a member outside
       the state file, confirm it's caught, screenshot for `findings/`.
 
 ---
 
 ## Log
 
-### 2026-08-11 — first version put raw permissions in the state file
+### 2026-08-11, first version put raw permissions in the state file
 
 The original `intended-state.yml` listed CyberArk permission booleans directly. It
 worked and it was unusable: 22 flags per member, a diff nobody could review, and
 nothing stopping two entries that both mean "auditor" from differing.
 
 Collapsed to three roles with the translation in one module. The state file became
-reviewable and the permission model became testable, which is the real win — the part
+reviewable and the permission model became testable, which is the real win, the part
 of a PAM automation you most need certainty about is the part that decides who gets
 what, and now it runs on a laptop with no tenant.
 
@@ -97,7 +97,7 @@ Final run: **20 passed** (`findings/test-run.txt`).
 
 ---
 
-### 2026-08-11 — talked myself out of automating deletion
+### 2026-08-11, talked myself out of automating deletion
 
 Considered full convergence, including removing undeclared members. Decided against
 it, and this is the decision I'd most want to defend out loud.

@@ -1,5 +1,5 @@
 # Declarative intended state for the lab tenant. The runbooks converge the tenant
-# toward this file — it is the source of truth, not the PVWA UI.
+# toward this file, it is the source of truth, not the PVWA UI.
 
 safes:
   - name: LAB-Linux-Root
